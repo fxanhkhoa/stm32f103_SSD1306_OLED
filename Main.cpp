@@ -26,8 +26,9 @@ void getLatLon(char *s);
 
 uint32_t timer, time_pre =0, time_now = 0;
 
-char s[100] = "";
-char pos = 0;
+char s[70] = "";
+char s_b[50] = "";
+char pos = 0, pos_b = 0;
 char mode = NONE;
 
 float lat,lon;
@@ -195,8 +196,14 @@ extern "C" void USART2_IRQHandler(void)
 		/* RXNE handler */
     if(USART_GetITStatus(USART1, USART_IT_RXNE) != RESET)
     {
-			//GPIO_ResetBits(GPIOC, GPIO_Pin_13);
-			//s[pos] = (char)USART_ReceiveData(USART1);
+			s_b[pos_b] = (char)USART_ReceiveData(USART2);
+			pos_b ++;
+			if (s_b[pos_b - 1] == ')')
+			{
+				GPIO_ResetBits(GPIOC, GPIO_Pin_13);
+				pos_b = 0;
+				strcpy(s_b, "");
+			}
 		}
 }
 
